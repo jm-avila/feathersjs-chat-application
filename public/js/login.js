@@ -44,10 +44,10 @@ $(document).ready(function() {
       .then(token => {
         window.location.href = serverurl;
       })
-      .catch(err =>
+      .catch(err => {
         $("#error-message")
-          .text(`There was an error ${err}`)
-          .show()
-      );
+          .text(`There was an error ${err.message}.`)
+          .show();
+      });
   });
 });

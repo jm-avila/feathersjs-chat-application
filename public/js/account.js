@@ -41,7 +41,7 @@ $(document).ready(function() {
       })
       .catch(err => {
         $("#error-message")
-          .text(`There was an error ${err}`)
+          .text(`There was an error ${err.message}`)
           .show();
       });
   });
