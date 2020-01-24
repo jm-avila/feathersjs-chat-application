@@ -16,12 +16,19 @@ $(document).ready(function() {
   // obtain users service
   var userService = client.service("/users");
 
-  // Handle form submittal
-  $("#logout-icon").on("click", function(e) {
-    e.preventDefault();
+  client
+    .authenticate()
+    .then(response => {
+      // Handle form submittal
+      $("#logout-icon").on("click", function(e) {
+        e.preventDefault();
 
-    // Logout is clicked
-    client.logout();
-    window.location.href = `${serverurl}/login.html`;
-  });
+        // Logout is clicked
+        client.logout();
+        window.location.href = `${serverurl}/login.html`;
+      });
+    })
+    .catch(err => {
+      window.location.href = `${serverurl}/login.html`;
+    });
 });
