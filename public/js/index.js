@@ -17,10 +17,28 @@ $(document).ready(function() {
 
   var messageService = client.service("/messages");
 
+  var getMessages = async () => {
+    var messages = await messageService.find({
+      query: {
+        $limit: 2,
+        $sort: { createdAt: -1 }
+      }
+    });
+
+    var htmlMessages = messages.data
+      .sort((a, b) => (new Date(a.createdAt) > new Date(b.createdAt) ? 1 : -1))
+      .map(message =>
+        new Message(message.text, message.createdAt).getMessageHtmlString()
+      );
+
+    return htmlMessages;
+  };
+
   // Message class - Handle message production
   class Message {
-    constructor(msgText) {
+    constructor(msgText, createdAt) {
       this.msgText = msgText;
+      this.createdAt = createdAt;
     }
 
     getMessageHtmlString() {
@@ -42,7 +60,7 @@ $(document).ready(function() {
           </span>
         </div>
         <h4 class="media-heading">${"CHemi"}</h4>
-        <p class="mb-3">${"New"}</p>
+        <p class="mb-3">${this.createdAt}</p>
         <p>
          ${this.msgText}
         </p>
@@ -63,6 +81,8 @@ $(document).ready(function() {
         client.logout();
         window.location.href = `${serverurl}/login.html`;
       });
+
+      getMessages().then(htmlMessages => $("#chat-area").append(htmlMessages));
 
       // Handle form submittal
       $("#submit-message-form").submit(function(e) {
@@ -85,7 +105,7 @@ $(document).ready(function() {
 
       // Watch for new message events and handle
       messageService.on("created", message => {
-        var newMessage = new Message(message.text);
+        var newMessage = new Message(message.text, message.createdAt);
 
         $("#chat-area").append(newMessage.getMessageHtmlString());
 
