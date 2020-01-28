@@ -16,6 +16,42 @@ $(document).ready(function() {
   // obtain message service
 
   var messageService = client.service("/messages");
+
+  // Message class - Handle message production
+  class Message {
+    constructor(msgText) {
+      this.msgText = msgText;
+    }
+
+    getMessageHtmlString() {
+      var msgHtmlString = `<div class="media">
+      <div class="media-left mr-3">
+        <a href="#">
+          <img
+            src="https://img.favpng.com/23/0/3/computer-icons-user-profile-clip-art-portable-network-graphics-png-favpng-YEj6NsJygkt6nFTNgiXg9fg9w.jpg"
+            alt="64x64 user image"
+            class="media-object"
+            style="width: 64px; height: 64px;"
+          />
+        </a>
+      </div>
+      <div class="media-body border-bottom">
+        <div class="float-right">
+          <span class="delete-comment" title="Delete Comment">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+        </div>
+        <h4 class="media-heading">${"CHemi"}</h4>
+        <p class="mb-3">${"New"}</p>
+        <p>
+         ${this.msgText}
+        </p>
+      </div>
+    </div>`;
+      return msgHtmlString;
+    }
+  }
+
   // Is user authenticated - run page code ELSE redirecto to login page
   client
     .authenticate()
@@ -48,7 +84,9 @@ $(document).ready(function() {
 
       // Watch for new message events and handle
       messageService.on("created", message => {
-        console.log(message);
+        var newMessage = new Message(message.text);
+
+        console.log(newMessage.getMessageHtmlString());
       });
     })
     .catch(err => {
