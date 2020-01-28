@@ -24,7 +24,7 @@ $(document).ready(function() {
     }
 
     getMessageHtmlString() {
-      var msgHtmlString = `<div class="media">
+      var msgHtmlString = `<div class="media mt-3">
       <div class="media-left mr-3">
         <a href="#">
           <img
@@ -71,6 +71,7 @@ $(document).ready(function() {
         var msgText = $msgText.val();
         $msgText.val("");
 
+        // if message text contains more than whitespace, save the message to the database.
         if (msgText.trim().length) {
           messageService
             .create({
@@ -86,7 +87,9 @@ $(document).ready(function() {
       messageService.on("created", message => {
         var newMessage = new Message(message.text);
 
-        console.log(newMessage.getMessageHtmlString());
+        $("#chat-area").append(newMessage.getMessageHtmlString());
+
+        $("html, body").animate({ scrollTop: $(document).height() }, "slow");
       });
     })
     .catch(err => {
