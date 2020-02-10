@@ -27,8 +27,8 @@ $(document).ready(function() {
 
     var htmlMessages = messages.data
       .sort((a, b) => (new Date(a.createdAt) > new Date(b.createdAt) ? 1 : -1))
-      .map(({ text, createdAt, userId }) =>
-        new Message(text, createdAt, userId).getMessageHtmlString()
+      .map(({ text, createdAt, _id, userId }) =>
+        new Message(text, createdAt, _id, userId).getMessageHtmlString()
       );
 
     return htmlMessages;
@@ -36,9 +36,10 @@ $(document).ready(function() {
 
   // Message class - Handle message production
   class Message {
-    constructor(msgText, createdAt, msgUserId = null) {
+    constructor(msgText, createdAt, msgId, msgUserId = null) {
       this.msgText = msgText;
       this.createdAt = createdAt;
+      this.msgId = msgId;
       this.msgUserId = msgUserId;
     }
 
@@ -54,7 +55,7 @@ $(document).ready(function() {
       `;
       }
       var msgHtmlString = `
-      <div class="media mt-3">
+      <div class="media mt-3" data-id="${this.msgId}">
         <div class="media-left mr-3">
           <a href="#">
             <img
@@ -91,6 +92,14 @@ $(document).ready(function() {
 
   // function runs all page load script after authentication is completed.
   function main() {
+    $("#chat-area").on("click", ".delete-comment", function() {
+      var msgId = $(this)
+        .closest(".media")
+        .attr("data-id");
+
+      messageService.remove(msgId);
+    });
+
     $("#logout-icon").on("click", function(e) {
       e.preventDefault();
 
@@ -121,12 +130,17 @@ $(document).ready(function() {
     });
 
     // Watch for new message events and handle
-    messageService.on("created", ({ text, createdAt, userId }) => {
-      var newMessage = new Message(text, createdAt, userId);
+    messageService.on("created", ({ text, createdAt, _id, userId }) => {
+      var newMessage = new Message(text, createdAt, _id, userId);
 
       $("#chat-area").append(newMessage.getMessageHtmlString());
 
       $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+    });
+
+    // Watch for deleted message events and handle
+    messageService.on("removed", ({ _id }) => {
+      $(`.media[data-id="${_id}"]`).remove();
     });
   }
 });
