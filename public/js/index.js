@@ -44,7 +44,13 @@ $(document).ready(function() {
     }
 
     getMessageHtmlString() {
-      var deleteIconHtml = "";
+      var deleteIconHtml = `
+      <div class="float-right">
+        <span class="delete-comment" title="Delete Comment">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      </div>
+    `;
       if (this.msgUserId === client.get("userId")) {
         deleteIconHtml = `
         <div class="float-right">

@@ -1,7 +1,12 @@
 const { authenticate } = require("@feathersjs/authentication").hooks;
 const { setNow } = require("feathers-hooks-common");
 const { setField } = require("feathers-authentication-hooks");
-
+const tempHook = () => context => {
+  const { params, data } = context;
+  console.log({ from: params.user._id, as: data.userId });
+  console.log("context", context);
+  return context;
+};
 module.exports = {
   before: {
     all: [authenticate("jwt")],
@@ -11,9 +16,12 @@ module.exports = {
       setNow("createdAt"),
       setField({ from: "params.user._id", as: "data.userId" })
     ],
-    update: [],
-    patch: [],
-    remove: []
+    update: [setField({ from: "params.user._id", as: "data.userId" })],
+    patch: [setField({ from: "params.user._id", as: "data.userId" })],
+    remove: [
+      setField({ from: "params.user._id", as: "data.userId" }),
+      tempHook()
+    ]
   },
 
   after: {
