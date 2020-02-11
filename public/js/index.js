@@ -34,6 +34,36 @@ $(document).ready(function() {
     return htmlMessages;
   };
 
+  // User class - Handle users
+  class Users {
+    constructor({ _id, username }) {
+      this._id = _id;
+      this.username = username;
+    }
+
+    getUserHtmlString() {
+      return `
+          <div class="media" data-id="${this._id}">
+            <div class="media-left media-middle">
+              <a href="#">
+                <img
+                  src="https://img.favpng.com/23/0/3/computer-icons-user-profile-clip-art-portable-network-graphics-png-favpng-YEj6NsJygkt6nFTNgiXg9fg9w.jpg"
+                  alt="32x32 user image"
+                  class="media-object"
+                  style="width: 32px; height: 32px;"
+                />
+              </a>
+            </div>
+            <div class="media-body border-bottom">
+              <h4 class="media-heading">
+                ${this.username}
+              </h4>
+            </div>
+          </div>
+      `;
+    }
+  }
+
   // Message class - Handle message production
   class Message {
     constructor(msgText, createdAt, msgId, msgUserId = null) {
