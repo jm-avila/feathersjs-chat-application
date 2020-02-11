@@ -42,6 +42,19 @@ module.exports = function(app) {
     }
   });
 
+  app.on("logout", (authResult, { connection }) => {
+    if (connection) {
+      const {
+        user: { isOnline, _id }
+      } = authResult;
+
+      app.channel("authenticated").leave(connection);
+      if (isOnline) {
+        app.service("users").patch(_id, { isOnline: false });
+      }
+    }
+  });
+
   // eslint-disable-next-line no-unused-vars
   app.publish((data, hook) => {
     // Here you can add event publishers to channels set up in `channels.js`
