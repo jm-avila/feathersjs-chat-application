@@ -19,6 +19,7 @@ $(document).ready(function() {
   // Get User Credentials
   function getCredentials() {
     var user = {
+      username: $("#username").val(),
       email: $("#email").val(),
       password: $("#password").val()
     };
@@ -31,7 +32,6 @@ $(document).ready(function() {
     e.preventDefault();
 
     var userCredentials = getCredentials();
-
     // Create a user using feathers client
 
     userService
